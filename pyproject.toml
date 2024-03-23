@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "youtube-polling"
+version = "0.1.0"
+description = "API to get recent youtube videos by polling Youtube Search API"
+authors = ["Hiruthik J <hiruthik27@gmail.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.110.0"
+uvicorn = "^0.29.0"
+pydantic-settings = "^2.2.1"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.6.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pycln]
+all = true
+# path = "src"

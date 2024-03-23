@@ -1,0 +1,28 @@
+.idea
+.ipynb_checkpoints
+.mypy_cache
+__pycache__
+.pytest_cache
+htmlcov
+dist
+site
+.coverage
+coverage.xml
+docs_build
+site_build
+.vscode
+
+log
+*.log
+.env*
+!.env.example*
+venv
+.venv/
+
+# vim temporary files
+*~
+.*.sw?
+.cache
+
+# macOS
+.DS_Store
