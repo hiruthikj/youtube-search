@@ -18,7 +18,7 @@ class CorrelationIdFilter(logging.Filter):
 
 
 # TODO: Better logging, correlation id logging, structured logging
-def setup_logging():
+def setup_logging(debug: bool):
     logging_config = {
         "version": 1,
         "disable_existing_loggers": False,
@@ -48,7 +48,7 @@ def setup_logging():
                 "filters": ["request_id", "correlation_id"],
             },
             "info_stream": {
-                "level": "INFO",
+                "level": "DEBUG" if debug else "INFO",
                 "class": "logging.StreamHandler",
                 "formatter": "standard",
                 "stream": "ext://sys.stdout",
@@ -62,6 +62,3 @@ def setup_logging():
     }
 
     dictConfig(logging_config)
-
-
-setup_logging()

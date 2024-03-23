@@ -8,9 +8,14 @@ fastapi = "~=0.110"
 uvicorn = "~=0.29"
 pydantic-settings = "~=2.0"
 apscheduler = "*"
+sqlalchemy = "~=2.0"
+psycopg = {extras = ["binary"], version = "~=3.1"}
 
 [dev-packages]
 pre-commit = "*"
 
 [requires]
 python_version = "3.10"
+
+[pipenv]
+allow_prereleases = true

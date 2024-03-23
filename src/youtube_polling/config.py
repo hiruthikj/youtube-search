@@ -11,7 +11,14 @@ class Settings(BaseSettings):
     DBHOST: str
 
     DBPORT: int = 5432
-    DBNAME: str = ""
+    DBNAME: str = "app_db"
+
+    CONNECTION_STR: str
+
+    # App Config
+    POLL_INTERVAL_SECONDS: int = 10
+    GOOGLE_DEVELOPER_KEY: str
+    YOUTUBE_API_ENDPOINT: str = "https://youtube.googleapis.com/youtube/v3/search"
 
     # Meta
     DEBUG: bool = False
