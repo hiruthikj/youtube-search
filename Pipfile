@@ -7,9 +7,10 @@ name = "pypi"
 fastapi = "~=0.110"
 uvicorn = "~=0.29"
 pydantic-settings = "~=2.0"
-apscheduler = "*"
+apscheduler = "~=4.0.0a4"
 sqlalchemy = "~=2.0"
 psycopg = {extras = ["binary"], version = "~=3.1"}
+requests = "~=2.31"
 
 [dev-packages]
 pre-commit = "*"

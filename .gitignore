@@ -11,6 +11,7 @@ coverage.xml
 docs_build
 site_build
 .vscode
+.ruff_cache
 
 log
 *.log
