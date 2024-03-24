@@ -17,5 +17,5 @@ class YoutubeVideoModel(Base):
     __table_args__ = (
         Index("idx_youtube_videos_video_id", video_id, unique=True),
         Index("idx_youtube_videos_published_at", published_at),
-        Index("idx_youtube_videos_query_used", query_used),
+        # Index("idx_youtube_videos_query_used", query_used),
     )

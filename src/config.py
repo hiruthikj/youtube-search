@@ -4,14 +4,15 @@ from pydantic_settings import BaseSettings, PydanticBaseSettingsSource
 # https://progressstory.com/tech/configuration-management-python-pydantic/
 class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
-    PROJECT_NAME: str = "youtube-polling"
+    PROJECT_NAME: str = "youtube-search"
 
-    DBUSER: str
-    DBPWD: str
-    DBHOST: str
+    # TODO Use this and build connection string
+    # DBUSER: str
+    # DBPWD: str
+    # DBHOST: str
 
-    DBPORT: int = 5432
-    DBNAME: str = "app_db"
+    # DBPORT: int = 5432
+    # DBNAME: str = "app_db"
 
     CONNECTION_STR: str
 

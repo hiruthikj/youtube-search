@@ -10,6 +10,7 @@ youtube_videos (
     query_used TEXT NOT NULL
 );
 
+-- TODO: Can add indexes for Full Text Search
 
 CREATE UNIQUE INDEX
 IF NOT EXISTS
@@ -21,7 +22,7 @@ IF NOT EXISTS
 idx_youtube_videos_published_at
 ON youtube_videos (published_at);
 
-CREATE INDEX
-IF NOT EXISTS
-idx_youtube_videos_query_used
-ON youtube_videos (query_used);
+-- CREATE INDEX
+-- IF NOT EXISTS
+-- idx_youtube_videos_query_used
+-- ON youtube_videos (query_used);
