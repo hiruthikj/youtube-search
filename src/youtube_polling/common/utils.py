@@ -27,5 +27,10 @@ def get_printable(input):
 
     return str(input)
 
+
 def convert_pydantic_error(errors: list):
-    return [{'check': loc, 'error': error['msg']} for error in errors for loc in error["loc"]]
+    return [
+        {"check": loc, "error": error["msg"]}
+        for error in errors
+        for loc in error["loc"]
+    ]

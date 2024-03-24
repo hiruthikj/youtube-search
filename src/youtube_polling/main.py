@@ -10,23 +10,12 @@ from fastapi.responses import JSONResponse
 
 from .common.constants import RequestStatus
 from .config import settings
-from .database import SessionLocal
 from .extenstions.logger_setup import setup_logging
 from .extenstions.middleware import RequestContextLogMiddleware
 from .logic import fetch_from_yt
 from .route import search_router
 
-# from .logic import fetch_from_yt
-
-
 setup_logging(debug=settings.DEBUG)
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 @asynccontextmanager
@@ -40,7 +29,6 @@ async def lifespan(app: FastAPI):
     except Exception:
         logging.critical("Could not connect to DB", exc_info=True)
         exit(1)
-
 
     async with AsyncScheduler() as scheduler:
         app.state.scheduler = scheduler
@@ -68,11 +56,12 @@ async def lifespan(app: FastAPI):
     logging.shutdown()
     logging.info("Cleaning done")
 
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
     debug=settings.DEBUG,
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 app.add_middleware(RequestContextLogMiddleware)
 
@@ -81,7 +70,6 @@ app.include_router(router=search_router)
 
 @app.get("/healthcheck")
 async def healthcheck():
-    return await fetch_from_yt()
     return "OK"
 
 
@@ -102,7 +90,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
 
 @app.exception_handler(HTTPException)
-async def http_exception_handler(request, exc):
+async def http_exception_handler(request, exc: HTTPException):
     error_response = {
         "status": RequestStatus.FAIL,
         "error": {
@@ -118,7 +106,7 @@ async def http_exception_handler(request, exc):
 
 
 @app.exception_handler(Exception)
-async def generic_exception_handler(request: Request, exc: RequestValidationError):
+async def generic_exception_handler(request: Request, exc: Exception):
     error_response = {
         "status": RequestStatus.FAIL,
         "error": {

@@ -19,18 +19,25 @@ class LoggingRoute(APIRoute):
 
         async def custom_route_handler(request: Request) -> Response:
             req_body = await request.body()
-            logging.info(f"Recieved Request on {request.url}. Request Details: {get_printable(request)}")
+            logging.info(
+                f"Recieved Request on {request.url}. Request Details: {get_printable(request)}"
+            )
 
             response = await original_route_handler(request)
 
             if isinstance(response, StreamingResponse):
-                res_body = b''
+                res_body = b""
                 async for item in response.body_iterator:
                     res_body += item
 
                 task = BackgroundTask(log_response, req_body, res_body)
-                return Response(content=res_body, status_code=response.status_code,
-                        headers=dict(response.headers), media_type=response.media_type, background=task)
+                return Response(
+                    content=res_body,
+                    status_code=response.status_code,
+                    headers=dict(response.headers),
+                    media_type=response.media_type,
+                    background=task,
+                )
             else:
                 res_body = response.body
                 response.background = BackgroundTask(log_response, req_body, res_body)
