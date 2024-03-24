@@ -12,8 +12,8 @@ from .common.constants import RequestStatus
 from .config import settings
 from .extenstions.logger_setup import setup_logging
 from .extenstions.middleware import RequestContextLogMiddleware
-from .logic import fetch_from_yt
-from .route import search_router
+from .routes.search_video import search_router
+from .services.yt_video import fetch_from_yt
 
 setup_logging(debug=settings.DEBUG)
 
@@ -37,10 +37,7 @@ async def lifespan(app: FastAPI):
             await app.state.scheduler.add_schedule(
                 func_or_task_id=fetch_from_yt,
                 trigger=IntervalTrigger(seconds=settings.POLL_INTERVAL_SECONDS),
-                # next_run_time=datetime.now(tz=timezone.utc),
             )
-            # await app.state.scheduler.wait_until_stopped()
-
             await app.state.scheduler.run_until_stopped()
         except Exception:
             logging.critical("CRON Scheduling failed", exc_info=True)

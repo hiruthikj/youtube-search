@@ -1,14 +1,15 @@
 import logging
+from ast import Dict
 from datetime import datetime, timezone
 
 import requests
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session
 
-from .config import settings
-from .database import SessionLocal
-from .models import YoutubeVideoModel
-from .schemas import YoutubeVideo
+from ..config import settings
+from ..db.database import SessionLocal
+from ..db.models import YoutubeVideoModel
+from ..db.schemas import YoutubeVideo
 
 
 async def create_youtube_video_record(db: Session, youtube_video: YoutubeVideo):
@@ -20,11 +21,11 @@ async def create_youtube_video_record(db: Session, youtube_video: YoutubeVideo):
         "thumbnail_url": youtube_video.thumbnail_url,
         "query_used": youtube_video.query_used,
     }
-    # db.add(db_video_record)
 
     stmt = (
         insert(YoutubeVideoModel)
         .values(db_video_dict)
+        # Does nothing when we try to add already existing video
         .on_conflict_do_nothing(index_elements=[YoutubeVideoModel.video_id])
     )
 
@@ -35,7 +36,7 @@ async def create_youtube_video_record(db: Session, youtube_video: YoutubeVideo):
     return db_video_dict
 
 
-async def fetch_from_yt() -> dict:
+async def fetch_from_yt() -> Dict:
     search_query = "ipl"
     max_results = 10
     published_after = (
@@ -61,15 +62,6 @@ async def fetch_from_yt() -> dict:
         )
         response.raise_for_status()
 
-    except requests.exceptions.HTTPError as err:
-        print("HTTP Error:", err)
-        raise err
-    except requests.exceptions.ConnectionError as err:
-        print("Connection Error:", err)
-        raise err
-    except requests.exceptions.Timeout as err:
-        print("Timeout Error:", err)
-        raise err
     except requests.exceptions.RequestException as err:
         print("Request Error:", err)
         raise err
@@ -88,5 +80,6 @@ async def fetch_from_yt() -> dict:
         await create_youtube_video_record(
             db=SessionLocal(), youtube_video=youtube_video
         )
-        logging.info("Added to DB")
-    # return result
+        logging.info(f"Added video_id={youtube_video.video_id} to DB")
+
+    return result

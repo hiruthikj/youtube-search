@@ -15,7 +15,6 @@ def get_request_repr(request_obj: Request):
         "path_params": request_obj.path_params,
         "client": request_obj.client,
         "body": request_obj._body,
-        # "cookies": request_obj.cookies,
     }
     str_repr = str(request_dict)
     return str_repr

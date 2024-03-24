@@ -31,9 +31,6 @@ def setup_logging(debug: bool):
             },
         },
         "formatters": {
-            # 'standard': {
-            #     'format': '%(asctime)s REQ-ID:%(request_id)s %(levelname)s %(name)s %(message)s'
-            # },
             "standard": {
                 "()": CustomFormatter,
                 "format": "%(message)s",
