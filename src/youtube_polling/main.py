@@ -35,11 +35,12 @@ async def lifespan(app: FastAPI):
     logging.debug("Setting Up App...")
 
     try:
-
+        # TODO
         pass
     except Exception:
         logging.critical("Could not connect to DB", exc_info=True)
         exit(1)
+
 
     async with AsyncScheduler() as scheduler:
         app.state.scheduler = scheduler
@@ -50,7 +51,7 @@ async def lifespan(app: FastAPI):
                 trigger=IntervalTrigger(seconds=settings.POLL_INTERVAL_SECONDS),
                 # next_run_time=datetime.now(tz=timezone.utc),
             )
-            await app.state.scheduler.wait_until_stopped()
+            # await app.state.scheduler.wait_until_stopped()
 
             await app.state.scheduler.run_until_stopped()
         except Exception:

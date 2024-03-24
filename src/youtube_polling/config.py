@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     CONNECTION_STR: str
 
     # App Config
-    POLL_INTERVAL_SECONDS: int = 10
+    POLL_INTERVAL_SECONDS: int = 20
     GOOGLE_DEVELOPER_KEY: str
     YOUTUBE_API_ENDPOINT: str = "https://youtube.googleapis.com/youtube/v3/search"
 

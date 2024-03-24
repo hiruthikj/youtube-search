@@ -2,6 +2,7 @@ import logging
 from datetime import datetime, timezone
 
 import requests
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session
 
 from .config import settings
@@ -11,17 +12,27 @@ from .schemas import YoutubeVideo
 
 
 async def create_youtube_video_record(db: Session, youtube_video: YoutubeVideo):
-    db_video_record = YoutubeVideoModel(
-        video_id=youtube_video.video_id,
-        title=youtube_video.title,
-        description=youtube_video.description,
-        published_at=youtube_video.published_at,
-        thumbnail_url=youtube_video.thumbnail_url,
-        query_used=youtube_video.query_used
+    db_video_dict = {
+        "video_id": youtube_video.video_id,
+        "title": youtube_video.title,
+        "description": youtube_video.description,
+        "published_at": youtube_video.published_at,
+        "thumbnail_url": youtube_video.thumbnail_url,
+        "query_used": youtube_video.query_used
+    }
+    # db.add(db_video_record)
+
+    stmt = (
+        insert(YoutubeVideoModel)
+        .values(db_video_dict)
+        .on_conflict_do_nothing(index_elements=[YoutubeVideoModel.video_id])
     )
-    db.add(db_video_record)
+
+    print(stmt)
+
+    db.execute(stmt)
     db.commit()
-    return db_video_record
+    return db_video_dict
 
 
 async def fetch_from_yt() -> dict:
