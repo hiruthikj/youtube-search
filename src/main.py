@@ -7,9 +7,11 @@ from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from sqlalchemy import text
 
 from .common.constants import RequestStatus
 from .config import settings
+from .db.database import SessionLocal
 from .extenstions.logger_setup import setup_logging
 from .extenstions.middleware import RequestContextLogMiddleware
 from .routes.search_video import search_router
@@ -24,34 +26,40 @@ async def lifespan(app: FastAPI):
     logging.debug("Setting Up App...")
 
     try:
-        # TODO
-        pass
+        session = SessionLocal()
+        connection = session.connection()
+        connection.execute(text("SELECT 1"))
+        connection.close()
+        session.close()
     except Exception:
         logging.critical("Could not connect to DB", exc_info=True)
         exit(1)
 
     async with AsyncScheduler() as scheduler:
-        app.state.scheduler = scheduler
-
         try:
-            await app.state.scheduler.add_schedule(
+            await scheduler.start_in_background()
+            await scheduler.add_schedule(
                 func_or_task_id=fetch_from_yt,
                 trigger=IntervalTrigger(seconds=settings.POLL_INTERVAL_SECONDS),
             )
-            await app.state.scheduler.run_until_stopped()
-        except Exception:
+        except Exception as e:
             logging.critical("CRON Scheduling failed", exc_info=True)
-            await app.state.scheduler.stop()
+            await scheduler.wait_until_stopped()
+            await scheduler.stop()
+            raise e
 
-    yield
+        # on shutdown
+        yield
 
-    # on shutdown
-    logging.info("Cleaning up...")
-    logging.info("Shutting down CRON...")
-    # await app.state.scheduler.stop()
+        await scheduler.stop()
+        await scheduler.wait_until_stopped()
 
-    logging.shutdown()
-    logging.info("Cleaning done")
+
+        logging.info("Cleaning up...")
+        logging.info("Shutting down CRON...")
+
+        logging.shutdown()
+        logging.info("Cleaning done")
 
 
 app = FastAPI(

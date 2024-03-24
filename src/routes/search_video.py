@@ -8,9 +8,9 @@ from sqlalchemy.orm import Session
 
 from ..common.constants import RequestStatus
 from ..config import settings
+from ..db import models
 from ..db.database import get_db
 from ..extenstions.logging_router import LoggingRoute
-from ..db import models
 
 search_router = APIRouter(prefix=settings.API_V1_STR, route_class=LoggingRoute)
 

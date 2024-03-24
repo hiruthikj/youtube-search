@@ -29,8 +29,6 @@ async def create_youtube_video_record(db: Session, youtube_video: YoutubeVideo):
         .on_conflict_do_nothing(index_elements=[YoutubeVideoModel.video_id])
     )
 
-    print(stmt)
-
     db.execute(stmt)
     db.commit()
     return db_video_dict
